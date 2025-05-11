@@ -1,0 +1,53 @@
+{
+  "source_dir": "D:\\Shixi\\SwissTable",
+  "name": "0Ayachi0/SwissTable",
+  "packages": [
+    {
+      "is-main": false,
+      "is-third-party": false,
+      "root-path": "D:\\Shixi\\SwissTable\\src",
+      "root": "0Ayachi0/SwissTable",
+      "rel": "",
+      "files": {
+        "D:\\Shixi\\SwissTable\\src\\swisstable.mbt": {
+          "backend": [
+            "Wasm",
+            "WasmGC",
+            "Js",
+            "Native",
+            "LLVM"
+          ],
+          "optlevel": [
+            "Debug",
+            "Release"
+          ]
+        }
+      },
+      "wbtest-files": {},
+      "test-files": {
+        "D:\\Shixi\\SwissTable\\src\\swisstable_test.mbt": {
+          "backend": [
+            "Wasm",
+            "WasmGC",
+            "Js",
+            "Native",
+            "LLVM"
+          ],
+          "optlevel": [
+            "Debug",
+            "Release"
+          ]
+        }
+      },
+      "mbt-md-files": {},
+      "deps": [],
+      "wbtest-deps": [],
+      "test-deps": [],
+      "artifact": "D:\\Shixi\\SwissTable\\target\\wasm-gc\\release\\check\\SwissTable.mi"
+    }
+  ],
+  "deps": [],
+  "backend": "wasm-gc",
+  "opt_level": "release",
+  "source": "src"
+}

@@ -1,20 +1,29 @@
-# SwissTable - High-Performance Hash Table Implementation
+# SwissTable
 
-*[English](README.md) | [中文](README.zh-CN.md)*
+[English](README.md) | [简体中文](README.zh-CN.md)
+
+
+[![Build Status](https://img.shields.io/github/actions/workflow/status/moonbit-community/SwissTable/ci.yml)](https://github.com/moonbit-community/SwissTable/actions)  [![codecov](https://codecov.io/gh/moonbit-community/SwissTable/branch/main/graph/badge.svg)](https://codecov.io/gh/moonbit-community/SwissTable)  
+
 
 SwissTable is a high-performance hash table implementation based on open addressing, adopting the design principles of Google's SwissTable. It features efficient cache performance, low collision rates, and stable performance characteristics.
 
-## Key Features
+## 🚀 Key Features
+• 🔍 **High Performance** - Uses open addressing + control byte array layout to increase cache hit rates  
+• 🏹 **Robin Hood Insertion Strategy** - Reduces element clustering, improving insertion and lookup performance  
+• 🔄 **Automatic Resizing** - Automatically resizes when the load factor exceeds a threshold (7/8), maintaining performance  
+• 🧩 **Generic Support** - Supports any hashable type as a key  
+• 🛠️ **Rich API** - Provides complete CRUD and traversal operations  
 
-- **High Performance**: Uses open addressing + control byte array layout to increase cache hit rates
-- **Robin Hood Insertion Strategy**: Reduces element clustering, improving insertion and lookup performance
-- **Automatic Resizing**: Automatically resizes when the load factor exceeds a threshold (7/8), maintaining performance
-- **Generic Support**: Supports any hashable type as a key
-- **Rich API**: Provides complete CRUD and traversal operations
+## 📥 Installation
+```bash
+moon add moonbit-community/SwissTable
+```
 
-## Basic Usage
+## 🚀 Usage Guide
 
-### Creating a Hash Table
+### 🔨 Creating a Hash Table
+You can create hash tables using the `new()`, `new(capacity)`, `from_array()`, or `of()` methods.
 
 ```moonbit
 // Create an empty hash table
@@ -30,7 +39,8 @@ let array_map = @SwissTable.from_array([("one", 1), ("two", 2)])
 let fixed_map = @SwissTable.of([("one", 1), ("two", 2)])
 ```
 
-### CRUD Operations
+### ➕ CRUD Operations
+Use the `set()`, `get()`, `get_or_default()`, `contains()`, `remove()`, and `clear()` methods to manipulate the hash table.
 
 ```moonbit
 // Insert or update a value
@@ -57,7 +67,8 @@ map["key"] = 42  // equivalent to map.set("key", 42)
 let value = map["key"]  // equivalent to map.get("key")
 ```
 
-### Traversal Operations
+### 🔀 Traversal Operations
+Use the `each()`, `eachi()`, `iter()`, and `iter2()` methods for traversing the hash table.
 
 ```moonbit
 // Basic traversal
@@ -88,7 +99,8 @@ loop {
 }
 ```
 
-### Other Operations
+### 🔢 Utility Methods
+Use the `size()`, `capacity()`, `is_empty()`, and `to_array()` methods to get information about the hash table.
 
 ```moonbit
 // Get the hash table size
@@ -104,19 +116,96 @@ let is_empty = map.is_empty()
 let arr = map.to_array()
 ```
 
-## Performance Considerations
+### 🔍 Equality and String Representation
+Use the `equals()` and `show()` methods to compare hash tables and get their string representation.
 
-- SwissTable uses a load factor of 7/8, providing a good balance of space efficiency and performance in most cases
-- Robin Hood insertion strategy reduces long probe sequences, especially at high load factors
-- Using a separate control byte array to store metadata improves cache locality
+```moonbit
+// Compare two hash tables
+let map1 = @SwissTable.from_array([("one", 1), ("two", 2)])
+let map2 = @SwissTable.from_array([("two", 2), ("one", 1)])
+let equal = map1.equals(map2)  // true, order doesn't matter
 
-## Suitable Scenarios
+// Get string representation
+let str = map1.show()  // e.g., "SwissTable{one: 1, two: 2}"
+```
 
-- Scenarios requiring high-performance hash tables
-- Core data structures for compilers and language runtimes
-- Performance-sensitive applications
-- Scenarios requiring frequent lookup and insertion operations
+## 🚀 Advanced Usage Examples
 
-## Contributions
+### Example: Using SwissTable as a Frequency Counter
 
-Issues and suggestions for improvements are welcome. 
+```moonbit
+// Count word frequencies in a text
+fn count_word_frequencies(text: String) -> @SwissTable.T[String, Int] {
+  let words = text.split(" ")
+  let frequency_map = @SwissTable.new()
+  
+  for word in words {
+    let cleaned_word = word.trim().to_lower()
+    if cleaned_word != "" {
+      let count = frequency_map.get_or_default(cleaned_word, 0)
+      frequency_map[cleaned_word] = count + 1
+    }
+  }
+  
+  frequency_map
+}
+
+// Usage example
+let text = "to be or not to be that is the question"
+let frequencies = count_word_frequencies(text)
+
+// Print all frequencies
+frequencies.each(fn(word, count) {
+  println!("'{}' appears {} times", word, count)
+})
+```
+
+### Example: Implementing a Simple Cache with SwissTable
+
+```moonbit
+struct Cache[K: Hash + Eq, V] {
+  map: @SwissTable.T[K, V],
+  max_size: Int
+}
+
+fn Cache::new[K: Hash + Eq, V](max_size: Int) -> Cache[K, V] {
+  Cache { 
+    map: @SwissTable.new(), 
+    max_size 
+  }
+}
+
+fn Cache::get(self, key: K) -> Option[V] {
+  self.map.get(key)
+}
+
+fn Cache::put(self, key: K, value: V) -> Unit {
+  // If we're at capacity and this is a new key, we could
+  // implement an eviction policy here
+  if self.map.size() >= self.max_size && !self.map.contains(key) {
+    // For simplicity, we'll just prevent new additions
+    return
+  }
+  
+  self.map[key] = value
+}
+
+// Usage example
+let cache = Cache::new[String, Int](5)
+cache.put("key1", 100)
+cache.put("key2", 200)
+
+match cache.get("key1") {
+  Some(value) => println!("Found: {}", value),
+  None => println!("Not found")
+}
+```
+
+## 📜 License
+This project is licensed under the Apache-2.0 License. See LICENSE file for details.
+
+## 📢 Contact & Support
+• Moonbit Community: moonbit-community  
+• GitHub Issues: [Report an Issue](https://github.com/moonbit-community/SwissTable/issues)
+
+👋 If you like this project, give it a ⭐! Happy coding! 🚀 

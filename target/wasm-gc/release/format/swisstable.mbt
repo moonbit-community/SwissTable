@@ -13,6 +13,7 @@
 // limitations under the License.
 
 // 控制字节的常量定义
+
 ///|
 pub const EMPTY : Int = 0xFF // 11111111 - 表示空桶
 
@@ -109,7 +110,7 @@ fn power_2_above_internal(x : Int, n : Int) -> Int {
 /// 示例:
 ///
 /// ```moonbit
-/// let map : T[String, Int] = new(capacity=16)
+/// let _map : T[String, Int] = new(capacity=16)
 /// ```
 pub fn[K, V] new(capacity~ : Int = 8) -> T[K, V] {
   let capacity = power_2_above_internal(8, capacity)
@@ -188,7 +189,7 @@ fn[K : Eq, V] find_bucket(self : T[K, V], hash : Int, key : K) -> Int {
     if ctrl != DELETED && ctrl == h2 {
       match self.entries[idx] {
         Some(entry) => if entry.hash == hash && entry.key == key { return idx }
-        None => ignore({})
+        None => ignore(())
       }
     }
 
@@ -234,7 +235,7 @@ fn[K : Eq, V] find_insert_slot(self : T[K, V], hash : Int, key : K) -> Int {
     if ctrl == h2 {
       match self.entries[idx] {
         Some(entry) => if entry.hash == hash && entry.key == key { return idx }
-        None => ignore({})
+        None => ignore(())
       }
     }
 
@@ -280,7 +281,7 @@ fn[K : Eq, V] grow(self : T[K, V]) -> Unit {
           self.entries[slot] = Some(entry)
           self.size = self.size + 1
         }
-        None => ignore({})
+        None => ignore(())
       }
     }
     i = i + 1
@@ -321,7 +322,7 @@ pub fn[K : Hash + Eq, V] set(self : T[K, V], key : K, value : V) -> Unit {
           entry.value = value
           return
         }
-      None => ignore({})
+      None => ignore(())
     }
   }
 
@@ -391,7 +392,7 @@ pub fn[K : Hash + Eq, V] op_set(self : T[K, V], key : K, value : V) -> Unit {
 ///
 /// ```moonbit
 /// let map = of([("one", 1), ("two", 2)])
-/// let value = map.get("one") // 返回 Some(1)
+/// ignore(map.get("one")) // 返回 Some(1)
 /// ```
 pub fn[K : Hash + Eq, V] get(self : T[K, V], key : K) -> V? {
   let hash = key.hash()
@@ -462,7 +463,7 @@ pub fn[K, V] iter(self : T[K, V]) -> Iter[(K, V)] {
     if self.ctrl[i] != EMPTY && self.ctrl[i] != DELETED {
       match self.entries[i] {
         Some(entry) => entries.push((entry.key, entry.value))
-        None => ignore({})
+        None => ignore(())
       }
     }
     i = i + 1
@@ -487,7 +488,7 @@ pub fn[K, V] Iter2::next(self : Iter2[K, V]) -> IterResult[K, V] {
           self.pos = i + 1
           return IterResult::Value(entry.key, entry.value)
         }
-        None => ignore({})
+        None => ignore(())
       }
     }
     i = i + 1
@@ -505,7 +506,7 @@ pub fn[K, V] each(self : T[K, V], f : (K, V) -> Unit) -> Unit {
     if self.ctrl[i] != EMPTY && self.ctrl[i] != DELETED {
       match self.entries[i] {
         Some(entry) => f(entry.key, entry.value)
-        None => ignore({})
+        None => ignore(())
       }
     }
     i = i + 1
@@ -523,7 +524,7 @@ pub fn[K, V] eachi(self : T[K, V], f : (Int, K, V) -> Unit) -> Unit {
           f(idx, entry.key, entry.value)
           idx = idx + 1
         }
-        None => ignore({})
+        None => ignore(())
       }
     }
     i = i + 1
@@ -577,7 +578,7 @@ pub impl[K : Hash + Eq, V : Eq] Eq for T[K, V] with op_equal(
             Some(v) => if v != entry.value { return false }
             None => return false
           }
-        None => ignore({})
+        None => ignore(())
       }
     }
     i = i + 1
@@ -606,7 +607,7 @@ pub impl[K : Show, V : Show] Show for T[K, V] with output(
           logger.write_string(": ")
           entry.value.output(logger)
         }
-        None => ignore({})
+        None => ignore(())
       }
     }
     i = i + 1

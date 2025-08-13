@@ -18,7 +18,7 @@ test "SwissTable/创建" {
   inspect(map.capacity(), content="8")
   inspect(map.size(), content="0")
   inspect(map.is_empty(), content="true")
-  let map2 = new(capacity=20)
+  let map2 : T[String, Int] = new(capacity=20)
   // 容量应该被调整为大于等于20的最小2的幂，即32
   inspect(map2.capacity(), content="32")
 }
@@ -586,8 +586,8 @@ test "SwissTable/大量删除后重新平衡" {
     map.set(i, i * 10)
   }
 
-  // 记录当前容量
-  let initial_cap = map.capacity()
+  // 记录当前容量 (忽略未使用的值)
+  ignore(())
 
   // 删除大部分元素
   for i = 0; i < 10; i = i + 1 {
@@ -829,7 +829,7 @@ test "SwissTable/迭代器复杂情况" {
   let mut continue_loop = true
   while continue_loop {
     match iter.next() {
-      IterResult::Value(k, v) => count = count + 1
+      IterResult::Value(_, _) => count = count + 1
       // 不检查具体值，因为顺序可能不确定
       IterResult::End => continue_loop = false
     }
@@ -908,7 +908,7 @@ test "SwissTable/each 空表" {
 test "SwissTable/eachi 空表" {
   let map : T[Int, String] = new()
   let mut count = 0
-  map.eachi(fn(i, k, v) { count = count + 1 })
+  map.eachi(fn(_, _, _) { count = count + 1 })
   inspect(count, content="0")
 }
 
@@ -975,9 +975,6 @@ test "SwissTable/None分支处理" {
   map.set(0, 100)
   map.set(1, 101)
   map.remove(0)
-
-  // 强制触发 None 分支
-  let slot = 0 // 假设这是已删除元素的位置
 
   // 添加一个新元素，可能会探测到已删除的位置
   map.set(4, 104) // 与0可能冲突
@@ -1048,17 +1045,17 @@ test "SwissTable/Show实现边缘情况" {
 ///| 测试 power_2_above_internal 函数的边缘情况
 test "SwissTable/Power2Above边缘情况" {
   // 测试各种边界值
-  let map1 = new(capacity=0) // 应该得到最小容量8
+  let map1 : T[Unit, Unit] = new(capacity=0) // 应该得到最小容量8
   inspect(map1.capacity(), content="8")
-  let map2 = new(capacity=7) // 应该得到8
+  let map2 : T[Unit, Unit] = new(capacity=7) // 应该得到8
   inspect(map2.capacity(), content="8")
-  let map3 = new(capacity=8) // 应该保持8
+  let map3 : T[Unit, Unit] = new(capacity=8) // 应该保持8
   inspect(map3.capacity(), content="8")
-  let map4 = new(capacity=9) // 应该得到16
+  let map4 : T[Unit, Unit] = new(capacity=9) // 应该得到16
   inspect(map4.capacity(), content="16")
 
   // 测试大容量
-  let map5 = new(capacity=1000) // 应该得到1024
+  let map5 : T[Unit, Unit] = new(capacity=1000) // 应该得到1024
   inspect(map5.capacity(), content="1024")
 }
 
@@ -1153,7 +1150,7 @@ test "SwissTable/迭代器完整测试" {
 
   // 测试空表迭代
   let mut empty_count = 0
-  for pair in map.iter() {
+  for _pair in map.iter() {
     empty_count = empty_count + 1
   }
   inspect(empty_count, content="0")
@@ -1165,7 +1162,7 @@ test "SwissTable/迭代器完整测试" {
 
   // 测试基本迭代
   let mut count = 0
-  for pair in map.iter() {
+  for _pair in map.iter() {
     count = count + 1
   }
   inspect(count, content="3")
@@ -1192,7 +1189,7 @@ test "SwissTable/迭代器完整测试" {
   let iter2 = map.iter2()
   while true {
     match iter2.next() {
-      IterResult::Value(k, v) => count = count + 1
+      IterResult::Value(_, _) => count = count + 1 // 使用 _ 来忽略未使用的变量
       IterResult::End => break
     }
   }

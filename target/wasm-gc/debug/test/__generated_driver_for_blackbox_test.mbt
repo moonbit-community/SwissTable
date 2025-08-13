@@ -2,13 +2,13 @@
 
 fn moonbit_test_driver_internal_error_to_string(x : Error) -> String = "%error.to_string"
 
-typealias Moonbit_Test_Driver_Internal_No_Args_Map = @moonbitlang/core/builtin.Map[
+typealias @moonbitlang/core/builtin.Map[
   String,
   @moonbitlang/core/builtin.Map[
     Int,
-    (() -> Unit!Error, @moonbitlang/core/builtin.Array[String]),
+    (() -> Unit raise Error, @moonbitlang/core/builtin.Array[String]),
   ],
-]
+] as Moonbit_Test_Driver_Internal_No_Args_Map
 
 let moonbit_test_driver_internal_no_args_tests : Moonbit_Test_Driver_Internal_No_Args_Map = {
   "swisstable_test.mbt": {
@@ -58,8 +58,13 @@ let moonbit_test_driver_internal_no_args_tests : Moonbit_Test_Driver_Internal_No
     43: (__test_73776973737461626c655f746573742e6d6274_43, ["SwissTable/操作符详细测试"]),
     44: (__test_73776973737461626c655f746573742e6d6274_44, ["SwissTable/迭代器完整测试"]),
   },
+  "swisstable.mbt": {
+    0: (__test_73776973737461626c652e6d6274_0, [""]),
+    1: (__test_73776973737461626c652e6d6274_1, [""]),
+    2: (__test_73776973737461626c652e6d6274_2, [""]),
+    3: (__test_73776973737461626c652e6d6274_3, [""]),
+  },
 }
-
 
 pub fn moonbit_test_driver_internal_execute(filename: MoonbitTestDriverInternalExternString, index: Int) -> Unit {
   let file_filter = moonbit_test_driver_internal_get_file_name(filename)
@@ -83,9 +88,9 @@ pub fn moonbit_test_driver_internal_execute(filename: MoonbitTestDriverInternalE
       }
       test_name = name
       try {
-        func!()
+        func()
       } catch {
-        Failure(e) | InspectError(e) | SnapshotError(e) => {
+        @moonbitlang/core/builtin.Failure(e) | @moonbitlang/core/builtin.InspectError(e) | @moonbitlang/core/builtin.SnapshotError(e) => {
           message = e
         }
         e => {
@@ -93,7 +98,7 @@ pub fn moonbit_test_driver_internal_execute(filename: MoonbitTestDriverInternalE
         }
       }
     }
-    _ => { message = "internal error: failed to filter test with (\{file_filter}, \{index_filter})" }
+    _ => { message = "skipped test" }
   }
 
   let file_name = file_filter.escape()
@@ -110,18 +115,20 @@ pub fn moonbit_test_driver_finish() -> Unit {
   
 }
 
+#test_entry
 fn main {
   ()
 }
-
 
 fn moonbit_test_driver_internal_get_file_name(file_name : MoonbitTestDriverInternalExternString) -> String {
   moonbit_test_driver_internal_string_from_extern(file_name)
 }
 
-extern type MoonbitTestDriverInternalStringReadHandle
+#external
+type MoonbitTestDriverInternalStringReadHandle
 
-extern type MoonbitTestDriverInternalExternString
+#external
+type MoonbitTestDriverInternalExternString
 
 fn moonbit_test_driver_internal_begin_read_string(s : MoonbitTestDriverInternalExternString) -> MoonbitTestDriverInternalStringReadHandle = "__moonbit_fs_unstable" "begin_read_string"
 

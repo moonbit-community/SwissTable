@@ -1,0 +1,74 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "0Ayachi0/SwissTable"
+
+// Values
+const CTRL_BIT_MASK : Int = 0x7F
+
+const DELETED : Int = 0x80
+
+const EMPTY : Int = 0xFF
+
+const EMPTY_OR_DELETED : Int = 0x80
+
+fn[K : Hash + Eq, V] from_array(Array[(K, V)]) -> T[K, V]
+
+fn[K, V] new(capacity? : Int) -> T[K, V]
+
+fn[K : Hash + Eq, V] of(FixedArray[(K, V)]) -> T[K, V]
+
+// Errors
+
+// Types and methods
+pub struct Entry[K, V] {
+  key : K
+  mut value : V
+  hash : Int
+}
+
+pub struct Iter2[K, V] {
+  table : T[K, V]
+  mut pos : Int
+}
+fn[K, V] Iter2::next(Self[K, V]) -> IterResult[K, V]
+
+pub enum IterResult[K, V] {
+  Value(K, V)
+  End
+}
+
+pub struct ProbeInfo {
+  pos : Int
+  dist : Int
+}
+
+pub struct T[K, V] {
+  mut ctrl : FixedArray[Int]
+  mut entries : FixedArray[Entry[K, V]?]
+  mut size : Int
+  mut capacity : Int
+  mut capacity_mask : Int
+  mut max_load : Int
+}
+fn[K, V] T::capacity(Self[K, V]) -> Int
+fn[K, V] T::clear(Self[K, V]) -> Unit
+fn[K : Hash + Eq, V] T::contains(Self[K, V], K) -> Bool
+fn[K, V] T::each(Self[K, V], (K, V) -> Unit) -> Unit
+fn[K, V] T::eachi(Self[K, V], (Int, K, V) -> Unit) -> Unit
+fn[K : Hash + Eq, V] T::get(Self[K, V], K) -> V?
+fn[K : Hash + Eq, V] T::get_or_default(Self[K, V], K, V) -> V
+fn[K, V] T::is_empty(Self[K, V]) -> Bool
+fn[K, V] T::iter(Self[K, V]) -> Iter[(K, V)]
+fn[K, V] T::iter2(Self[K, V]) -> Iter2[K, V]
+fn[K : Hash + Eq, V] T::op_get(Self[K, V], K) -> V?
+fn[K : Hash + Eq, V] T::op_set(Self[K, V], K, V) -> Unit
+fn[K : Hash + Eq, V] T::remove(Self[K, V], K) -> Unit
+fn[K : Hash + Eq, V] T::set(Self[K, V], K, V) -> Unit
+fn[K, V] T::size(Self[K, V]) -> Int
+fn[K, V] T::to_array(Self[K, V]) -> Array[(K, V)]
+impl[K : Hash + Eq, V : Eq] Eq for T[K, V]
+impl[K : Show, V : Show] Show for T[K, V]
+
+// Type aliases
+
+// Traits
+

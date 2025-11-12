@@ -113,7 +113,7 @@ fn power_2_above_internal(x : Int, n : Int) -> Int {
 /// 示例:
 ///
 /// ```moonbit
-/// let map : T[String, Int] = new(capacity=16)
+/// let _map : T[String, Int] = new(capacity=16)
 /// ```
 pub fn[K, V] new(capacity? : Int = 8) -> T[K, V] {
   let capacity = power_2_above_internal(8, capacity)
@@ -199,12 +199,14 @@ fn[K : Eq, V] T::find_bucket(self : T[K, V], hash : Int, key : K) -> Int {
     if ctrl != DELETED && ctrl == h2 {
       match self.entries[idx] {
         Some(entry) => if entry.hash == hash && entry.key == key { return idx }
-        None => ignore({})
+        None => ()
       }
     }
 
     // 如果探测距离超过了当前位置元素的探测距离，表示键不存在
-    if probe.dist > self.find_probe_distance(idx) {
+    if ctrl != EMPTY &&
+      ctrl != DELETED &&
+      probe.dist > self.find_probe_distance(idx) {
       return -1
     }
     probe = self.probe_sequence_next(probe)
@@ -247,7 +249,7 @@ fn[K : Eq, V] T::find_insert_slot(self : T[K, V], hash : Int, key : K) -> Int {
     if ctrl == h2 {
       match self.entries[idx] {
         Some(entry) => if entry.hash == hash && entry.key == key { return idx }
-        None => ignore({})
+        None => ()
       }
     }
 
@@ -294,7 +296,7 @@ fn[K : Eq, V] T::grow(self : T[K, V]) -> Unit {
           self.entries[slot] = Some(entry)
           self.size = self.size + 1
         }
-        None => ignore({})
+        None => ()
       }
     }
     i = i + 1
@@ -336,7 +338,7 @@ pub fn[K : Hash + Eq, V] T::set(self : T[K, V], key : K, value : V) -> Unit {
           entry.value = value
           return
         }
-      None => ignore({})
+      None => ()
     }
   }
 
@@ -408,7 +410,7 @@ pub fn[K : Hash + Eq, V] T::op_set(self : T[K, V], key : K, value : V) -> Unit {
 ///
 /// ```moonbit
 /// let map = of([("one", 1), ("two", 2)])
-/// let value = map.get("one") // 返回 Some(1)
+/// let _value = map.get("one") // 返回 Some(1)
 /// ```
 pub fn[K : Hash + Eq, V] T::get(self : T[K, V], key : K) -> V? {
   let hash = key.hash()
@@ -484,7 +486,7 @@ pub fn[K, V] T::iter(self : T[K, V]) -> Iter[(K, V)] {
     if self.ctrl[i] != EMPTY && self.ctrl[i] != DELETED {
       match self.entries[i] {
         Some(entry) => entries.push((entry.key, entry.value))
-        None => ignore({})
+        None => ()
       }
     }
     i = i + 1
@@ -511,7 +513,7 @@ pub fn[K, V] Iter2::next(self : Iter2[K, V]) -> IterResult[K, V] {
           self.pos = i + 1
           return IterResult::Value(entry.key, entry.value)
         }
-        None => ignore({})
+        None => ()
       }
     }
     i = i + 1
@@ -530,7 +532,7 @@ pub fn[K, V] T::each(self : T[K, V], f : (K, V) -> Unit) -> Unit {
     if self.ctrl[i] != EMPTY && self.ctrl[i] != DELETED {
       match self.entries[i] {
         Some(entry) => f(entry.key, entry.value)
-        None => ignore({})
+        None => ()
       }
     }
     i = i + 1
@@ -549,7 +551,7 @@ pub fn[K, V] T::eachi(self : T[K, V], f : (Int, K, V) -> Unit) -> Unit {
           f(idx, entry.key, entry.value)
           idx = idx + 1
         }
-        None => ignore({})
+        None => ()
       }
     }
     i = i + 1
@@ -591,7 +593,7 @@ pub fn[K : Hash + Eq, V] of(arr : FixedArray[(K, V)]) -> T[K, V] {
 
 ///|
 /// 相等性比较
-pub impl[K : Hash + Eq, V : Eq] Eq for T[K, V] with op_equal(
+pub impl[K : Hash + Eq, V : Eq] Eq for T[K, V] with equal(
   self : T[K, V],
   that : T[K, V],
 ) -> Bool {
@@ -607,7 +609,7 @@ pub impl[K : Hash + Eq, V : Eq] Eq for T[K, V] with op_equal(
             Some(v) => if v != entry.value { return false }
             None => return false
           }
-        None => ignore({})
+        None => ()
       }
     }
     i = i + 1
@@ -637,7 +639,7 @@ pub impl[K : Show, V : Show] Show for T[K, V] with output(
           logger.write_string(": ")
           entry.value.output(logger)
         }
-        None => ignore({})
+        None => ()
       }
     }
     i = i + 1

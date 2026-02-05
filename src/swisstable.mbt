@@ -190,7 +190,8 @@ fn find_bucket[K : Eq, V](self : T[K, V], hash : Int, key : K) -> Int {
     }
     
     // 如果探测距离超过了当前位置元素的探测距离，表示键不存在
-    if probe.dist > self.find_probe_distance(idx) {
+    // 注意：删除标记(DELETED)会打破探测距离不变式，因此不能据此提前退出。
+    if ctrl != DELETED && probe.dist > self.find_probe_distance(idx) {
       return -1
     }
     

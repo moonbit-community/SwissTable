@@ -19,7 +19,7 @@ test "SwissTable/创建" {
   inspect(map.size(), content="0")
   inspect(map.is_empty(), content="true")
   
-  let map2 = new(capacity=20)
+  let map2 : T[String, Int] = new(capacity=20)
   // 容量应该被调整为大于等于20的最小2的幂，即32
   inspect(map2.capacity(), content="32")
 }
@@ -1076,20 +1076,20 @@ test "SwissTable/Show实现边缘情况" {
 /// 测试 power_2_above_internal 函数的边缘情况
 test "SwissTable/Power2Above边缘情况" {
   // 测试各种边界值
-  let map1 = new(capacity=0) // 应该得到最小容量8
+  let map1 : T[String, Int] = new(capacity=0) // 应该得到最小容量8
   inspect(map1.capacity(), content="8")
   
-  let map2 = new(capacity=7) // 应该得到8
+  let map2 : T[String, Int] = new(capacity=7) // 应该得到8
   inspect(map2.capacity(), content="8")
   
-  let map3 = new(capacity=8) // 应该保持8
+  let map3 : T[String, Int] = new(capacity=8) // 应该保持8
   inspect(map3.capacity(), content="8")
   
-  let map4 = new(capacity=9) // 应该得到16
+  let map4 : T[String, Int] = new(capacity=9) // 应该得到16
   inspect(map4.capacity(), content="16")
   
   // 测试大容量
-  let map5 = new(capacity=1000) // 应该得到1024
+  let map5 : T[String, Int] = new(capacity=1000) // 应该得到1024
   inspect(map5.capacity(), content="1024")
 }
 

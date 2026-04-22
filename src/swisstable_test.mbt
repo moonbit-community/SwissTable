@@ -611,9 +611,6 @@ test "SwissTable/大量删除后重新平衡" {
     map.set(i, i * 10)
   }
   
-  // 记录当前容量
-  let initial_cap = map.capacity()
-  
   // 删除大部分元素
   for i = 0; i < 10; i = i + 1 {
     map.remove(i)
@@ -854,7 +851,7 @@ test "SwissTable/迭代器复杂情况" {
   let mut continue_loop = true
   while continue_loop {
     match iter.next() {
-      IterResult::Value(k, v) => {
+      IterResult::Value(_, _) => {
         count = count + 1
         // 不检查具体值，因为顺序可能不确定
       }
@@ -947,7 +944,7 @@ test "SwissTable/each 空表" {
 test "SwissTable/eachi 空表" {
   let map: T[Int, String] = new()
   let mut count = 0
-  map.eachi(fn(i, k, v) { count = count + 1 })
+  map.eachi(fn(_, _, _) { count = count + 1 })
   inspect(count, content="0")
 }
 
@@ -1003,9 +1000,6 @@ test "SwissTable/None分支处理" {
   map.set(0, 100)
   map.set(1, 101)
   map.remove(0)
-  
-  // 强制触发 None 分支
-  let slot = 0 // 假设这是已删除元素的位置
   
   // 添加一个新元素，可能会探测到已删除的位置
   map.set(4, 104) // 与0可能冲突
@@ -1185,7 +1179,7 @@ test "SwissTable/迭代器完整测试" {
   
   // 测试空表迭代
   let mut empty_count = 0
-  for pair in map.iter() {
+  for _ in map.iter() {
     empty_count = empty_count + 1
   }
   inspect(empty_count, content="0")
@@ -1197,7 +1191,7 @@ test "SwissTable/迭代器完整测试" {
   
   // 测试基本迭代
   let mut count = 0
-  for pair in map.iter() {
+  for _ in map.iter() {
     count = count + 1
   }
   inspect(count, content="3")
@@ -1226,7 +1220,7 @@ test "SwissTable/迭代器完整测试" {
   let iter2 = map.iter2()
   while true {
     match iter2.next() {
-      IterResult::Value(k, v) => {
+      IterResult::Value(_, _) => {
         count = count + 1
       }
       IterResult::End => {

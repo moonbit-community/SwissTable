@@ -575,7 +575,7 @@ pub fn of[K : Hash + Eq, V](arr : FixedArray[(K, V)]) -> T[K, V] {
 }
 
 /// 相等性比较
-pub impl[K : Hash + Eq, V : Eq] Eq for T[K, V] with op_equal(
+pub impl[K : Hash + Eq, V : Eq] Eq for T[K, V] with equal(
   self : T[K, V],
   that : T[K, V]
 ) -> Bool {

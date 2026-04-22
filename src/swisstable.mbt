@@ -94,7 +94,7 @@ fn power_2_above_internal(x : Int, n : Int) -> Int {
 /// ```moonbit
 /// let map : T[String, Int] = new(capacity=16)
 /// ```
-pub fn new[K, V](capacity~ : Int = 8) -> T[K, V] {
+pub fn[K, V] new(capacity~ : Int = 8) -> T[K, V] {
   let capacity = power_2_above_internal(8, capacity)
   // 修正：确保max_load计算正确，使用实际测试中观察到的值
   let max_load = capacity - 1  // 或使用一个更保守的值以确保扩容触发
@@ -116,23 +116,23 @@ pub fn new[K, V](capacity~ : Int = 8) -> T[K, V] {
 }
 
 /// 返回哈希表的当前容量
-pub fn capacity[K, V](self : T[K, V]) -> Int {
+pub fn[K, V] T::capacity(self : T[K, V]) -> Int {
   // 出于调试目的，确保容量是正确的
   self.capacity
 }
 
 /// 返回哈希表中的元素数量
-pub fn size[K, V](self : T[K, V]) -> Int {
+pub fn[K, V] T::size(self : T[K, V]) -> Int {
   self.size
 }
 
 /// 检查哈希表是否为空
-pub fn is_empty[K, V](self : T[K, V]) -> Bool {
+pub fn[K, V] T::is_empty(self : T[K, V]) -> Bool {
   self.size == 0
 }
 
 /// 清空哈希表中的所有元素
-pub fn clear[K, V](self : T[K, V]) -> Unit {
+pub fn[K, V] T::clear(self : T[K, V]) -> Unit {
   // 将所有控制字节设置为EMPTY
   let mut i = 0
   while i < self.capacity {
@@ -151,20 +151,23 @@ pub fn clear[K, V](self : T[K, V]) -> Unit {
 }
 
 /// 开始查找操作，返回初始探测信息
-fn probe_sequence_start[K, V](self : T[K, V], hash : Int) -> ProbeInfo {
+fn[K, V] T::probe_sequence_start(self : T[K, V], hash : Int) -> ProbeInfo {
   let pos = hash & self.capacity_mask
   { pos, dist: 0 }
 }
 
 /// 继续探测序列的下一个位置
-fn probe_sequence_next[K, V](self : T[K, V], probe : ProbeInfo) -> ProbeInfo {
+fn[K, V] T::probe_sequence_next(
+  self : T[K, V],
+  probe : ProbeInfo
+) -> ProbeInfo {
   let next_pos = (probe.pos + 1) & self.capacity_mask
   { pos: next_pos, dist: probe.dist + 1 }
 }
 
 /// 在哈希表中查找键的位置
 /// 如果找到，返回键的索引；否则返回-1
-fn find_bucket[K : Eq, V](self : T[K, V], hash : Int, key : K) -> Int {
+fn[K : Eq, V] T::find_bucket(self : T[K, V], hash : Int, key : K) -> Int {
   let h2 = get_ctrl_byte(hash)
   let mut probe = self.probe_sequence_start(hash)
   
@@ -201,7 +204,7 @@ fn find_bucket[K : Eq, V](self : T[K, V], hash : Int, key : K) -> Int {
 }
 
 /// 计算索引位置处元素的探测距离
-fn find_probe_distance[K, V](self : T[K, V], idx : Int) -> Int {
+fn[K, V] T::find_probe_distance(self : T[K, V], idx : Int) -> Int {
   match self.entries[idx] {
     Some(entry) => {
       let ideal_pos = entry.hash & self.capacity_mask
@@ -217,7 +220,7 @@ fn find_probe_distance[K, V](self : T[K, V], idx : Int) -> Int {
 
 /// 查找用于插入的桶
 /// 返回可以插入的索引，考虑Robin Hood策略
-fn find_insert_slot[K : Eq, V](self : T[K, V], hash : Int, key : K) -> Int {
+fn[K : Eq, V] T::find_insert_slot(self : T[K, V], hash : Int, key : K) -> Int {
   let h2 = get_ctrl_byte(hash)
   let mut probe = self.probe_sequence_start(hash)
   
@@ -254,7 +257,7 @@ fn find_insert_slot[K : Eq, V](self : T[K, V], hash : Int, key : K) -> Int {
 }
 
 /// 增长哈希表大小，当负载过高时调用
-fn grow[K : Eq, V](self : T[K, V]) -> Unit {
+fn[K : Eq, V] T::grow(self : T[K, V]) -> Unit {
   // 暂存旧数据
   let old_capacity = self.capacity
   let old_ctrl = self.ctrl
@@ -309,7 +312,7 @@ fn grow[K : Eq, V](self : T[K, V]) -> Unit {
 /// let map : T[String, Int] = new()
 /// map.set("key", 42)
 /// ```
-pub fn set[K : Hash + Eq, V](self : T[K, V], key : K, value : V) -> Unit {
+pub fn[K : Hash + Eq, V] T::set(self : T[K, V], key : K, value : V) -> Unit {
   // 修正：确保在size达到或超过max_load时扩容
   if self.size >= self.max_load {
     self.grow()
@@ -384,7 +387,11 @@ pub fn set[K : Hash + Eq, V](self : T[K, V], key : K, value : V) -> Unit {
 }
 
 /// 用于索引访问的操作符函数
-pub fn op_set[K : Hash + Eq, V](self : T[K, V], key : K, value : V) -> Unit {
+pub fn[K : Hash + Eq, V] T::op_set(
+  self : T[K, V],
+  key : K,
+  value : V
+) -> Unit {
   self.set(key, value)
 }
 
@@ -402,7 +409,7 @@ pub fn op_set[K : Hash + Eq, V](self : T[K, V], key : K, value : V) -> Unit {
 /// let map = of([("one", 1), ("two", 2)])
 /// let value = map.get("one") // 返回 Some(1)
 /// ```
-pub fn get[K : Hash + Eq, V](self : T[K, V], key : K) -> V? {
+pub fn[K : Hash + Eq, V] T::get(self : T[K, V], key : K) -> V? {
   let hash = key.hash()
   let idx = self.find_bucket(hash, key)
   
@@ -417,12 +424,16 @@ pub fn get[K : Hash + Eq, V](self : T[K, V], key : K) -> V? {
 }
 
 /// 用于索引访问的操作符函数
-pub fn op_get[K : Hash + Eq, V](self : T[K, V], key : K) -> V? {
+pub fn[K : Hash + Eq, V] T::op_get(self : T[K, V], key : K) -> V? {
   self.get(key)
 }
 
 /// 获取键对应的值，如果键不存在则返回默认值
-pub fn get_or_default[K : Hash + Eq, V](self : T[K, V], key : K, default : V) -> V {
+pub fn[K : Hash + Eq, V] T::get_or_default(
+  self : T[K, V],
+  key : K,
+  default : V
+) -> V {
   match self.get(key) {
     Some(v) => v
     None => default
@@ -430,7 +441,7 @@ pub fn get_or_default[K : Hash + Eq, V](self : T[K, V], key : K, default : V) ->
 }
 
 /// 检查键是否存在于哈希表中
-pub fn contains[K : Hash + Eq, V](self : T[K, V], key : K) -> Bool {
+pub fn[K : Hash + Eq, V] T::contains(self : T[K, V], key : K) -> Bool {
   let hash = key.hash()
   let idx = self.find_bucket(hash, key)
   idx >= 0
@@ -448,7 +459,7 @@ pub fn contains[K : Hash + Eq, V](self : T[K, V], key : K) -> Bool {
 /// let map = of([("one", 1), ("two", 2)])
 /// map.remove("one")
 /// ```
-pub fn remove[K : Hash + Eq, V](self : T[K, V], key : K) -> Unit {
+pub fn[K : Hash + Eq, V] T::remove(self : T[K, V], key : K) -> Unit {
   let hash = key.hash()
   let idx = self.find_bucket(hash, key)
   
@@ -462,7 +473,7 @@ pub fn remove[K : Hash + Eq, V](self : T[K, V], key : K) -> Unit {
 }
 
 /// 创建一个迭代器来遍历哈希表中的所有键值对
-pub fn iter[K, V](self : T[K, V]) -> Iter[(K, V)] {
+pub fn[K, V] T::iter(self : T[K, V]) -> Iter[(K, V)] {
   let entries = Array::new()
   
   let mut i = 0
@@ -482,12 +493,12 @@ pub fn iter[K, V](self : T[K, V]) -> Iter[(K, V)] {
 }
 
 /// 创建迭代器的另一种方式，使用Iter2类型
-pub fn iter2[K, V](self : T[K, V]) -> Iter2[K, V] {
+pub fn[K, V] T::iter2(self : T[K, V]) -> Iter2[K, V] {
   { table: self, pos: 0 }
 }
 
 /// 获取迭代器的下一个元素
-pub fn Iter2::next[K, V](self : Iter2[K, V]) -> IterResult[K, V] {
+pub fn[K, V] Iter2::next(self : Iter2[K, V]) -> IterResult[K, V] {
   // 从当前位置开始寻找下一个有效元素
   let mut i = self.pos
   while i < self.table.capacity {
@@ -511,7 +522,7 @@ pub fn Iter2::next[K, V](self : Iter2[K, V]) -> IterResult[K, V] {
 }
 
 /// 遍历哈希表中的所有键值对
-pub fn each[K, V](self : T[K, V], f : (K, V) -> Unit) -> Unit {
+pub fn[K, V] T::each(self : T[K, V], f : (K, V) -> Unit) -> Unit {
   let mut i = 0
   while i < self.capacity {
     if self.ctrl[i] != EMPTY && self.ctrl[i] != DELETED {
@@ -527,7 +538,7 @@ pub fn each[K, V](self : T[K, V], f : (K, V) -> Unit) -> Unit {
 }
 
 /// 带索引遍历哈希表中的所有键值对
-pub fn eachi[K, V](self : T[K, V], f : (Int, K, V) -> Unit) -> Unit {
+pub fn[K, V] T::eachi(self : T[K, V], f : (Int, K, V) -> Unit) -> Unit {
   let mut idx = 0
   let mut i = 0
   while i < self.capacity {
@@ -545,14 +556,14 @@ pub fn eachi[K, V](self : T[K, V], f : (Int, K, V) -> Unit) -> Unit {
 }
 
 /// 将哈希表转换为数组
-pub fn to_array[K, V](self : T[K, V]) -> Array[(K, V)] {
+pub fn[K, V] T::to_array(self : T[K, V]) -> Array[(K, V)] {
   let result = Array::new()
   self.each(fn(k, v) { result.push((k, v)) })
   result
 }
 
 /// 从数组创建哈希表
-pub fn from_array[K : Hash + Eq, V](arr : Array[(K, V)]) -> T[K, V] {
+pub fn[K : Hash + Eq, V] from_array(arr : Array[(K, V)]) -> T[K, V] {
   let capacity = power_2_above_internal(8, arr.length())
   let map = new(capacity=capacity)
   for pair in arr {
@@ -562,7 +573,7 @@ pub fn from_array[K : Hash + Eq, V](arr : Array[(K, V)]) -> T[K, V] {
 }
 
 /// 从固定大小数组创建哈希表
-pub fn of[K : Hash + Eq, V](arr : FixedArray[(K, V)]) -> T[K, V] {
+pub fn[K : Hash + Eq, V] of(arr : FixedArray[(K, V)]) -> T[K, V] {
   let capacity = power_2_above_internal(8, arr.length())
   let map = new(capacity=capacity)
   let mut i = 0

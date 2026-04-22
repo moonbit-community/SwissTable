@@ -1,0 +1,10 @@
+options(
+  description: "High performance SwissTable hash map implementation",
+  license: "Apache-2.0",
+  name: "SwissTable",
+  repository: {
+    "type": "git",
+    "url": "https://github.com/moonbit-community/SwissTable",
+  },
+  version: "0.1.0",
+)

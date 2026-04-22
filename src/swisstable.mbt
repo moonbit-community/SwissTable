@@ -13,6 +13,7 @@
 // limitations under the License.
 
 // 控制字节的常量定义
+
 ///|
 pub const EMPTY : Int = 0xFF // 11111111 - 表示空桶
 

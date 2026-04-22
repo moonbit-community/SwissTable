@@ -269,7 +269,7 @@ fn[K : Eq, V] T::find_insert_slot(self : T[K, V], hash : Int, key : K) -> Int {
 
 ///|
 /// 增长哈希表大小，当负载过高时调用
-fn[K : Eq, V] T::grow(self : T[K, V]) -> Unit {
+fn[K : Hash + Eq, V] T::grow(self : T[K, V]) -> Unit {
   // 暂存旧数据
   let old_capacity = self.capacity
   let old_ctrl = self.ctrl
@@ -292,15 +292,7 @@ fn[K : Eq, V] T::grow(self : T[K, V]) -> Unit {
   while i < old_capacity {
     if old_ctrl[i] != EMPTY && old_ctrl[i] != DELETED {
       match old_entries[i] {
-        Some(entry) => {
-          let hash = entry.hash
-          let h2 = get_ctrl_byte(hash)
-          let slot = self.find_insert_slot(hash, entry.key)
-
-          self.ctrl[slot] = h2
-          self.entries[slot] = Some(entry)
-          self.size = self.size + 1
-        }
+        Some(entry) => self.set(entry.key, entry.value)
         None => ()
       }
     }

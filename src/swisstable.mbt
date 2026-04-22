@@ -188,7 +188,7 @@ fn[K : Eq, V] T::find_bucket(self : T[K, V], hash : Int, key : K) -> Int {
             return idx
           }
         }
-        None => { ignore({}) }
+        None => ()
       }
     }
     
@@ -241,7 +241,7 @@ fn[K : Eq, V] T::find_insert_slot(self : T[K, V], hash : Int, key : K) -> Int {
             return idx
           }
         }
-        None => { ignore({}) }
+        None => ()
       }
     }
     
@@ -289,7 +289,7 @@ fn[K : Eq, V] T::grow(self : T[K, V]) -> Unit {
           self.entries[slot] = Some(entry)
           self.size = self.size + 1
         }
-        None => { ignore({}) }
+        None => ()
       }
     }
     i = i + 1
@@ -333,7 +333,7 @@ pub fn[K : Hash + Eq, V] T::set(self : T[K, V], key : K, value : V) -> Unit {
           return
         }
       }
-      None => { ignore({}) }
+      None => ()
     }
   }
   
@@ -483,7 +483,7 @@ pub fn[K, V] T::iter(self : T[K, V]) -> Iter[(K, V)] {
         Some(entry) => {
           entries.push((entry.key, entry.value))
         }
-        None => { ignore({}) }
+        None => ()
       }
     }
     i = i + 1
@@ -510,7 +510,7 @@ pub fn[K, V] Iter2::next(self : Iter2[K, V]) -> IterResult[K, V] {
           self.pos = i + 1
           return IterResult::Value(entry.key, entry.value)
         }
-        None => { ignore({}) }
+        None => ()
       }
     }
     i = i + 1
@@ -530,7 +530,7 @@ pub fn[K, V] T::each(self : T[K, V], f : (K, V) -> Unit) -> Unit {
         Some(entry) => {
           f(entry.key, entry.value)
         }
-        None => { ignore({}) }
+        None => ()
       }
     }
     i = i + 1
@@ -548,7 +548,7 @@ pub fn[K, V] T::eachi(self : T[K, V], f : (Int, K, V) -> Unit) -> Unit {
           f(idx, entry.key, entry.value)
           idx = idx + 1
         }
-        None => { ignore({}) }
+        None => ()
       }
     }
     i = i + 1
@@ -608,7 +608,7 @@ pub impl[K : Hash + Eq, V : Eq] Eq for T[K, V] with equal(
             None => return false
           }
         }
-        None => { ignore({}) }
+        None => ()
       }
     }
     i = i + 1
@@ -640,7 +640,7 @@ pub impl[K : Show, V : Show] Show for T[K, V] with output(
           logger.write_string(": ")
           entry.value.output(logger)
         }
-        None => { ignore({}) }
+        None => ()
       }
     }
     i = i + 1

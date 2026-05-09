@@ -36,10 +36,10 @@ test "SwissTable/插入和查找" {
   map.set("three", 3)
 
   // 测试查找
-  inspect(map.get("one"), content="Some(1)")
-  inspect(map.get("two"), content="Some(2)")
-  inspect(map.get("three"), content="Some(3)")
-  inspect(map.get("four"), content="None")
+  debug_inspect(map.get("one"), content="Some(1)")
+  debug_inspect(map.get("two"), content="Some(2)")
+  debug_inspect(map.get("three"), content="Some(3)")
+  debug_inspect(map.get("four"), content="None")
 
   // 测试get_or_default
   inspect(map.get_or_default("one", 100), content="1")
@@ -60,10 +60,10 @@ test "SwissTable/更新" {
   let map : T[String, Int] = new()
 
   map.set("key", 1)
-  inspect(map.get("key"), content="Some(1)")
+  debug_inspect(map.get("key"), content="Some(1)")
 
   map.set("key", 2)
-  inspect(map.get("key"), content="Some(2)")
+  debug_inspect(map.get("key"), content="Some(2)")
 
   // 大小应该不变
   inspect(map.size(), content="1")
@@ -80,8 +80,8 @@ test "SwissTable/删除" {
   inspect(map.size(), content="2")
 
   map.remove("one")
-  inspect(map.get("one"), content="None")
-  inspect(map.get("two"), content="Some(2)")
+  debug_inspect(map.get("one"), content="None")
+  debug_inspect(map.get("two"), content="Some(2)")
   inspect(map.size(), content="1")
 
   // 删除不存在的键
@@ -101,7 +101,7 @@ test "SwissTable/清空" {
 
   map.clear()
   inspect(map.is_empty(), content="true")
-  inspect(map.get("one"), content="None")
+  debug_inspect(map.get("one"), content="None")
   inspect(map.size(), content="0")
 }
 
@@ -112,15 +112,15 @@ test "SwissTable/从数组创建" {
   let map = from_array(arr)
 
   inspect(map.size(), content="3")
-  inspect(map.get("one"), content="Some(1)")
-  inspect(map.get("two"), content="Some(2)")
-  inspect(map.get("three"), content="Some(3)")
+  debug_inspect(map.get("one"), content="Some(1)")
+  debug_inspect(map.get("two"), content="Some(2)")
+  debug_inspect(map.get("three"), content="Some(3)")
 
   // 测试重复键
   let arr2 = [("one", 1), ("one", 100)]
   let map2 = from_array(arr2)
   inspect(map2.size(), content="1")
-  inspect(map2.get("one"), content="Some(100)")
+  debug_inspect(map2.get("one"), content="Some(100)")
 }
 
 ///|
@@ -131,8 +131,8 @@ test "SwissTable/从固定数组创建" {
   let map = of(fixed_arr)
 
   inspect(map.size(), content="2")
-  inspect(map.get("one"), content="Some(1)")
-  inspect(map.get("two"), content="Some(2)")
+  debug_inspect(map.get("one"), content="Some(1)")
+  debug_inspect(map.get("two"), content="Some(2)")
 }
 
 ///|
@@ -227,11 +227,11 @@ test "SwissTable/Robin Hood策略" {
   // 验证所有元素都能正确访问
   for i = 0; i < 12; i = i + 1 {
     // 直接使用字符串字面量
-    inspect(map.get(i), content="Some(" + i.to_string() + ")")
+    debug_inspect(map.get(i), content="Some(" + i.to_string() + ")")
   }
 
-  inspect(map.get(16), content="Some(100)")
-  inspect(map.get(17), content="Some(200)")
+  debug_inspect(map.get(16), content="Some(100)")
+  debug_inspect(map.get(17), content="Some(200)")
 }
 
 ///|
@@ -266,21 +266,21 @@ test "SwissTable/不同类型键" {
   map1.set(1, "one")
   map1.set(2, "two")
 
-  inspect(map1.get(1), content="Some(\"one\")")
+  debug_inspect(map1.get(1), content="Some(\"one\")")
 
   // 测试布尔键
   let map2 : T[Bool, String] = new()
   map2.set(true, "真")
   map2.set(false, "假")
 
-  inspect(map2.get(true), content="Some(\"真\")")
+  debug_inspect(map2.get(true), content="Some(\"真\")")
 
   // 测试元组键
   let map3 : T[(Int, String), Int] = new()
   map3.set((1, "one"), 100)
   map3.set((2, "two"), 200)
 
-  inspect(map3.get((1, "one")), content="Some(100)")
+  debug_inspect(map3.get((1, "one")), content="Some(100)")
 }
 
 ///|
@@ -294,9 +294,9 @@ test "SwissTable/大数据量" {
   }
 
   // 验证几个关键的检索
-  inspect(map.get(0), content="Some(0)")
-  inspect(map.get(5), content="Some(50)")
-  inspect(map.get(15), content="Some(150)")
+  debug_inspect(map.get(0), content="Some(0)")
+  debug_inspect(map.get(5), content="Some(50)")
+  debug_inspect(map.get(15), content="Some(150)")
 
   // 验证基础功能正常
   inspect(map.contains(10), content="true")
@@ -308,14 +308,14 @@ test "SwissTable/大数据量" {
   map.remove(10)
 
   // 验证删除成功
-  inspect(map.get(0), content="None")
-  inspect(map.get(5), content="None")
-  inspect(map.get(10), content="None")
+  debug_inspect(map.get(0), content="None")
+  debug_inspect(map.get(5), content="None")
+  debug_inspect(map.get(10), content="None")
 
   // 验证其他元素仍然存在
-  inspect(map.get(1), content="Some(10)")
-  inspect(map.get(6), content="Some(60)")
-  inspect(map.get(11), content="Some(110)")
+  debug_inspect(map.get(1), content="Some(10)")
+  debug_inspect(map.get(6), content="Some(60)")
+  debug_inspect(map.get(11), content="Some(110)")
 }
 
 ///|
@@ -328,8 +328,8 @@ test "SwissTable/操作符" {
   map["two"] = 2
 
   // 使用op_get
-  inspect(map["one"], content="Some(1)")
-  inspect(map["three"], content="None")
+  debug_inspect(map["one"], content="Some(1)")
+  debug_inspect(map["three"], content="None")
 }
 
 ///|
@@ -353,7 +353,7 @@ test "SwissTable/打印信息" {
 
   // 验证所有元素是否正确
   for i = 0; i < 7; i = i + 1 {
-    inspect(map.get(i), content="Some(" + (i * 10).to_string() + ")")
+    debug_inspect(map.get(i), content="Some(" + (i * 10).to_string() + ")")
   }
 }
 
@@ -381,7 +381,10 @@ test "SwissTable/扩容验证" {
   // 验证所有元素都能正确检索
   for i = 0; i < 7; i = i + 1 {
     let expected_value = i * 10
-    inspect(map.get(i), content="Some(" + expected_value.to_string() + ")")
+    debug_inspect(
+      map.get(i),
+      content="Some(" + expected_value.to_string() + ")",
+    )
   }
 }
 
@@ -417,7 +420,7 @@ test "SwissTable/极限情况" {
 
   // 验证所有元素都已删除
   for i = 0; i < 20; i = i + 1 {
-    inspect(map.get(i), content="None")
+    debug_inspect(map.get(i), content="None")
   }
 
   // 验证大小为0
@@ -437,30 +440,30 @@ test "SwissTable/特殊哈希值" {
   map.set(24, 124)
 
   // 验证所有元素都能正确检索
-  inspect(map.get(0), content="Some(100)")
-  inspect(map.get(8), content="Some(108)")
-  inspect(map.get(16), content="Some(116)")
-  inspect(map.get(24), content="Some(124)")
+  debug_inspect(map.get(0), content="Some(100)")
+  debug_inspect(map.get(8), content="Some(108)")
+  debug_inspect(map.get(16), content="Some(116)")
+  debug_inspect(map.get(24), content="Some(124)")
 
   // 删除中间的元素
   map.remove(8)
   map.remove(16)
 
   // 验证删除是否成功
-  inspect(map.get(8), content="None")
-  inspect(map.get(16), content="None")
+  debug_inspect(map.get(8), content="None")
+  debug_inspect(map.get(16), content="None")
 
   // 验证其他元素是否仍然存在
-  inspect(map.get(0), content="Some(100)")
-  inspect(map.get(24), content="Some(124)")
+  debug_inspect(map.get(0), content="Some(100)")
+  debug_inspect(map.get(24), content="Some(124)")
 
   // 重新添加已删除的元素
   map.set(8, 800)
   map.set(16, 1600)
 
   // 验证重新添加是否成功
-  inspect(map.get(8), content="Some(800)")
-  inspect(map.get(16), content="Some(1600)")
+  debug_inspect(map.get(8), content="Some(800)")
+  debug_inspect(map.get(16), content="Some(1600)")
 }
 
 ///|
@@ -476,30 +479,30 @@ test "SwissTable/复杂哈希冲突" {
   map.set(12, "值-12")
 
   // 验证所有元素都能正确检索
-  inspect(map.get(0), content="Some(\"值-0\")")
-  inspect(map.get(4), content="Some(\"值-4\")")
-  inspect(map.get(8), content="Some(\"值-8\")")
-  inspect(map.get(12), content="Some(\"值-12\")")
+  debug_inspect(map.get(0), content="Some(\"值-0\")")
+  debug_inspect(map.get(4), content="Some(\"值-4\")")
+  debug_inspect(map.get(8), content="Some(\"值-8\")")
+  debug_inspect(map.get(12), content="Some(\"值-12\")")
 
   // 更新一些值
   map.set(4, "新值-4")
   map.set(8, "新值-8")
 
   // 验证更新是否成功
-  inspect(map.get(4), content="Some(\"新值-4\")")
-  inspect(map.get(8), content="Some(\"新值-8\")")
+  debug_inspect(map.get(4), content="Some(\"新值-4\")")
+  debug_inspect(map.get(8), content="Some(\"新值-8\")")
 
   // 删除一些元素
   map.remove(0)
   map.remove(8)
 
   // 验证删除是否成功
-  inspect(map.get(0), content="None")
-  inspect(map.get(8), content="None")
+  debug_inspect(map.get(0), content="None")
+  debug_inspect(map.get(8), content="None")
 
   // 验证其他元素是否仍然存在
-  inspect(map.get(4), content="Some(\"新值-4\")")
-  inspect(map.get(12), content="Some(\"值-12\")")
+  debug_inspect(map.get(4), content="Some(\"新值-4\")")
+  debug_inspect(map.get(12), content="Some(\"值-12\")")
 
   // 添加更多元素以触发扩容
   for i = 16; i < 24; i = i + 4 {
@@ -507,10 +510,10 @@ test "SwissTable/复杂哈希冲突" {
   }
 
   // 验证所有元素都能正确检索
-  inspect(map.get(4), content="Some(\"新值-4\")")
-  inspect(map.get(12), content="Some(\"值-12\")")
+  debug_inspect(map.get(4), content="Some(\"新值-4\")")
+  debug_inspect(map.get(12), content="Some(\"值-12\")")
   for i = 16; i < 24; i = i + 4 {
-    inspect(map.get(i), content="Some(\"值-" + i.to_string() + "\")")
+    debug_inspect(map.get(i), content="Some(\"值-" + i.to_string() + "\")")
   }
 }
 
@@ -535,7 +538,7 @@ test "SwissTable/溢出处理" {
 
   // 验证元素是否正确添加
   for i = 0; i < 100; i = i + 1 {
-    inspect(map.get(i), content="Some(" + (i * 10).to_string() + ")")
+    debug_inspect(map.get(i), content="Some(" + (i * 10).to_string() + ")")
   }
 }
 
@@ -549,7 +552,7 @@ test "SwissTable/空哈希表" {
   inspect(map.is_empty(), content="true")
 
   // 尝试获取不存在的键
-  inspect(map.get(0), content="None")
+  debug_inspect(map.get(0), content="None")
   inspect(map.get_or_default(0, "默认值"), content="默认值")
 
   // 尝试删除不存在的键
@@ -585,7 +588,7 @@ test "SwissTable/删除后重新插入" {
 
   // 验证所有元素都存在
   for i = 0; i < 6; i = i + 1 {
-    inspect(map.get(i), content="Some(\"值-" + i.to_string() + "\")")
+    debug_inspect(map.get(i), content="Some(\"值-" + i.to_string() + "\")")
   }
 
   // 删除一些元素
@@ -594,14 +597,14 @@ test "SwissTable/删除后重新插入" {
   map.remove(5)
 
   // 验证删除是否成功
-  inspect(map.get(1), content="None")
-  inspect(map.get(3), content="None")
-  inspect(map.get(5), content="None")
+  debug_inspect(map.get(1), content="None")
+  debug_inspect(map.get(3), content="None")
+  debug_inspect(map.get(5), content="None")
 
   // 验证其他元素是否仍然存在
-  inspect(map.get(0), content="Some(\"值-0\")")
-  inspect(map.get(2), content="Some(\"值-2\")")
-  inspect(map.get(4), content="Some(\"值-4\")")
+  debug_inspect(map.get(0), content="Some(\"值-0\")")
+  debug_inspect(map.get(2), content="Some(\"值-2\")")
+  debug_inspect(map.get(4), content="Some(\"值-4\")")
 
   // 重新插入已删除的元素，但值不同
   map.set(1, "新值-1")
@@ -609,9 +612,9 @@ test "SwissTable/删除后重新插入" {
   map.set(5, "新值-5")
 
   // 验证重新插入是否成功
-  inspect(map.get(1), content="Some(\"新值-1\")")
-  inspect(map.get(3), content="Some(\"新值-3\")")
-  inspect(map.get(5), content="Some(\"新值-5\")")
+  debug_inspect(map.get(1), content="Some(\"新值-1\")")
+  debug_inspect(map.get(3), content="Some(\"新值-3\")")
+  debug_inspect(map.get(5), content="Some(\"新值-5\")")
 
   // 验证大小是否正确
   inspect(map.size(), content="6")
@@ -634,12 +637,12 @@ test "SwissTable/大量删除后重新平衡" {
 
   // 验证删除是否成功
   for i = 0; i < 10; i = i + 1 {
-    inspect(map.get(i), content="None")
+    debug_inspect(map.get(i), content="None")
   }
 
   // 验证剩余元素是否存在
-  inspect(map.get(10), content="Some(100)")
-  inspect(map.get(11), content="Some(110)")
+  debug_inspect(map.get(10), content="Some(100)")
+  debug_inspect(map.get(11), content="Some(110)")
 
   // 验证大小是否正确
   inspect(map.size(), content="2")
@@ -651,7 +654,7 @@ test "SwissTable/大量删除后重新平衡" {
 
   // 验证新元素是否添加成功
   for i = 20; i < 30; i = i + 1 {
-    inspect(map.get(i), content="Some(" + (i * 10).to_string() + ")")
+    debug_inspect(map.get(i), content="Some(" + (i * 10).to_string() + ")")
   }
 
   // 验证总大小是否正确
@@ -673,42 +676,42 @@ test "SwissTable/特殊哈希冲突模式" {
   map.set(40, "F")
 
   // 验证所有元素都能正确检索
-  inspect(map.get(0), content="Some(\"A\")")
-  inspect(map.get(8), content="Some(\"B\")")
-  inspect(map.get(16), content="Some(\"C\")")
-  inspect(map.get(24), content="Some(\"D\")")
-  inspect(map.get(32), content="Some(\"E\")")
-  inspect(map.get(40), content="Some(\"F\")")
+  debug_inspect(map.get(0), content="Some(\"A\")")
+  debug_inspect(map.get(8), content="Some(\"B\")")
+  debug_inspect(map.get(16), content="Some(\"C\")")
+  debug_inspect(map.get(24), content="Some(\"D\")")
+  debug_inspect(map.get(32), content="Some(\"E\")")
+  debug_inspect(map.get(40), content="Some(\"F\")")
 
   // 删除中间的元素
   map.remove(16)
   map.remove(24)
 
   // 验证删除是否成功
-  inspect(map.get(16), content="None")
-  inspect(map.get(24), content="None")
+  debug_inspect(map.get(16), content="None")
+  debug_inspect(map.get(24), content="None")
 
   // 验证其他元素是否仍然存在
-  inspect(map.get(0), content="Some(\"A\")")
-  inspect(map.get(8), content="Some(\"B\")")
-  inspect(map.get(32), content="Some(\"E\")")
-  inspect(map.get(40), content="Some(\"F\")")
+  debug_inspect(map.get(0), content="Some(\"A\")")
+  debug_inspect(map.get(8), content="Some(\"B\")")
+  debug_inspect(map.get(32), content="Some(\"E\")")
+  debug_inspect(map.get(40), content="Some(\"F\")")
 
   // 添加可能导致探测序列穿过已删除元素的新键
   map.set(48, "G")
   map.set(56, "H")
 
   // 验证新元素是否添加成功
-  inspect(map.get(48), content="Some(\"G\")")
-  inspect(map.get(56), content="Some(\"H\")")
+  debug_inspect(map.get(48), content="Some(\"G\")")
+  debug_inspect(map.get(56), content="Some(\"H\")")
 
   // 重新添加已删除的键，但值不同
   map.set(16, "C-新")
   map.set(24, "D-新")
 
   // 验证重新添加是否成功
-  inspect(map.get(16), content="Some(\"C-新\")")
-  inspect(map.get(24), content="Some(\"D-新\")")
+  debug_inspect(map.get(16), content="Some(\"C-新\")")
+  debug_inspect(map.get(24), content="Some(\"D-新\")")
 }
 
 ///|
@@ -725,23 +728,23 @@ test "SwissTable/特殊None分支" {
   map.remove(8)
 
   // 验证删除是否成功
-  inspect(map.get(8), content="None")
+  debug_inspect(map.get(8), content="None")
 
   // 验证其他元素是否仍然存在
-  inspect(map.get(0), content="Some(100)")
-  inspect(map.get(16), content="Some(116)")
+  debug_inspect(map.get(0), content="Some(100)")
+  debug_inspect(map.get(16), content="Some(116)")
 
   // 添加一个新元素，可能会探测到已删除的位置
   map.set(24, 124)
 
   // 验证新元素是否添加成功
-  inspect(map.get(24), content="Some(124)")
+  debug_inspect(map.get(24), content="Some(124)")
 
   // 重新添加已删除的元素
   map.set(8, 800)
 
   // 验证重新添加是否成功
-  inspect(map.get(8), content="Some(800)")
+  debug_inspect(map.get(8), content="Some(800)")
 }
 
 ///|
@@ -763,7 +766,7 @@ test "SwissTable/溢出处理边缘情况" {
 
   // 验证元素是否正确添加
   for i = 0; i < 10; i = i + 1 {
-    inspect(map.get(i), content="Some(" + (i * 10).to_string() + ")")
+    debug_inspect(map.get(i), content="Some(" + (i * 10).to_string() + ")")
   }
 }
 
@@ -780,10 +783,10 @@ test "SwissTable/Robin Hood复杂插入" {
   map.set(12, 112) // 与0、4和8冲突
 
   // 验证所有元素都能正确检索
-  inspect(map.get(0), content="Some(100)")
-  inspect(map.get(4), content="Some(104)")
-  inspect(map.get(8), content="Some(108)")
-  inspect(map.get(12), content="Some(112)")
+  debug_inspect(map.get(0), content="Some(100)")
+  debug_inspect(map.get(4), content="Some(104)")
+  debug_inspect(map.get(8), content="Some(108)")
+  debug_inspect(map.get(12), content="Some(112)")
 
   // 添加更多元素触发扩容
   map.set(16, 116)
@@ -793,15 +796,15 @@ test "SwissTable/Robin Hood复杂插入" {
   map.set(32, 132)
 
   // 验证所有元素都能正确检索
-  inspect(map.get(0), content="Some(100)")
-  inspect(map.get(4), content="Some(104)")
-  inspect(map.get(8), content="Some(108)")
-  inspect(map.get(12), content="Some(112)")
-  inspect(map.get(16), content="Some(116)")
-  inspect(map.get(20), content="Some(120)")
-  inspect(map.get(24), content="Some(124)")
-  inspect(map.get(28), content="Some(128)")
-  inspect(map.get(32), content="Some(132)")
+  debug_inspect(map.get(0), content="Some(100)")
+  debug_inspect(map.get(4), content="Some(104)")
+  debug_inspect(map.get(8), content="Some(108)")
+  debug_inspect(map.get(12), content="Some(112)")
+  debug_inspect(map.get(16), content="Some(116)")
+  debug_inspect(map.get(20), content="Some(120)")
+  debug_inspect(map.get(24), content="Some(124)")
+  debug_inspect(map.get(28), content="Some(128)")
+  debug_inspect(map.get(32), content="Some(132)")
 }
 
 ///|
@@ -1029,14 +1032,14 @@ test "SwissTable/None分支处理" {
   map.set(8, 108) // 与0和4可能冲突
 
   // 验证元素正确添加
-  inspect(map.get(1), content="Some(101)")
-  inspect(map.get(4), content="Some(104)")
-  inspect(map.get(8), content="Some(108)")
+  debug_inspect(map.get(1), content="Some(101)")
+  debug_inspect(map.get(4), content="Some(104)")
+  debug_inspect(map.get(8), content="Some(108)")
 
   // 删除并重新添加，测试标记为删除的槽位
   map.remove(4)
   map.set(4, 400)
-  inspect(map.get(4), content="Some(400)")
+  debug_inspect(map.get(4), content="Some(400)")
 }
 
 ///|
@@ -1053,19 +1056,19 @@ test "SwissTable/Robin Hood特殊插入" {
   map.set(16, 116) // 与0、4、8和12冲突，可能触发Robin Hood
 
   // 验证所有元素都能正确检索
-  inspect(map.get(0), content="Some(100)")
-  inspect(map.get(4), content="Some(104)")
-  inspect(map.get(8), content="Some(108)")
-  inspect(map.get(12), content="Some(112)")
-  inspect(map.get(16), content="Some(116)")
+  debug_inspect(map.get(0), content="Some(100)")
+  debug_inspect(map.get(4), content="Some(104)")
+  debug_inspect(map.get(8), content="Some(108)")
+  debug_inspect(map.get(12), content="Some(112)")
+  debug_inspect(map.get(16), content="Some(116)")
 
   // 删除中间元素，然后添加新元素，测试Robin Hood插入的特殊情况
   map.remove(8)
   map.set(20, 120)
 
   // 验证删除和添加是否成功
-  inspect(map.get(8), content="None")
-  inspect(map.get(20), content="Some(120)")
+  debug_inspect(map.get(8), content="None")
+  debug_inspect(map.get(20), content="Some(120)")
 }
 
 ///|
@@ -1143,11 +1146,11 @@ test "SwissTable/多次扩容收缩" {
 
   // 验证元素正确存在
   for i = 25; i < 50; i = i + 1 {
-    inspect(map.get(i), content="Some(" + i.to_string() + ")")
+    debug_inspect(map.get(i), content="Some(" + i.to_string() + ")")
   }
 
   for i = 100; i < 150; i = i + 1 {
-    inspect(map.get(i), content="Some(" + i.to_string() + ")")
+    debug_inspect(map.get(i), content="Some(" + i.to_string() + ")")
   }
 }
 
@@ -1189,17 +1192,17 @@ test "SwissTable/操作符详细测试" {
   map["key2"] = 200
 
   // 测试 op_get
-  inspect(map["key1"], content="Some(100)")
-  inspect(map["key2"], content="Some(200)")
-  inspect(map["key3"], content="None")
+  debug_inspect(map["key1"], content="Some(100)")
+  debug_inspect(map["key2"], content="Some(200)")
+  debug_inspect(map["key3"], content="None")
 
   // 测试更新已存在的键
   map["key1"] = 150
-  inspect(map["key1"], content="Some(150)")
+  debug_inspect(map["key1"], content="Some(150)")
 
   // 测试删除后的 op_get
   map.remove("key1")
-  inspect(map["key1"], content="None")
+  debug_inspect(map["key1"], content="None")
 }
 
 ///|

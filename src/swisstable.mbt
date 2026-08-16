@@ -318,13 +318,14 @@ fn[K : Hash + Eq, V] T::grow(self : T[K, V]) -> Unit {
 /// let map : T[String, Int] = new()
 /// map.set("key", 42)
 /// ```
+#alias("_[_]=_")
 pub fn[K : Hash + Eq, V] T::set(self : T[K, V], key : K, value : V) -> Unit {
   // 修正：确保在size达到或超过max_load时扩容
   if self.size >= self.max_load {
     self.grow()
   }
 
-  let hash = key.hash()
+  let hash = Hash::hash(key)
   let h2 = get_ctrl_byte(hash)
   let slot = self.find_insert_slot(hash, key)
 
@@ -392,12 +393,6 @@ pub fn[K : Hash + Eq, V] T::set(self : T[K, V], key : K, value : V) -> Unit {
 }
 
 ///|
-/// 用于索引访问的操作符函数
-pub fn[K : Hash + Eq, V] T::op_set(self : T[K, V], key : K, value : V) -> Unit {
-  self.set(key, value)
-}
-
-///|
 /// 从哈希表中获取与键关联的值
 ///
 /// 参数:
@@ -413,8 +408,9 @@ pub fn[K : Hash + Eq, V] T::op_set(self : T[K, V], key : K, value : V) -> Unit {
 ///
 /// let value = map.get("one") // 返回 Some(1)
 /// ```
+#alias("_[_]")
 pub fn[K : Hash + Eq, V] T::get(self : T[K, V], key : K) -> V? {
-  let hash = key.hash()
+  let hash = Hash::hash(key)
   let idx = self.find_bucket(hash, key)
 
   if idx >= 0 {
@@ -425,12 +421,6 @@ pub fn[K : Hash + Eq, V] T::get(self : T[K, V], key : K) -> V? {
   } else {
     None
   }
-}
-
-///|
-/// 用于索引访问的操作符函数
-pub fn[K : Hash + Eq, V] T::op_get(self : T[K, V], key : K) -> V? {
-  self.get(key)
 }
 
 ///|
@@ -449,7 +439,7 @@ pub fn[K : Hash + Eq, V] T::get_or_default(
 ///|
 /// 检查键是否存在于哈希表中
 pub fn[K : Hash + Eq, V] T::contains(self : T[K, V], key : K) -> Bool {
-  let hash = key.hash()
+  let hash = Hash::hash(key)
   let idx = self.find_bucket(hash, key)
   idx >= 0
 }
@@ -468,7 +458,7 @@ pub fn[K : Hash + Eq, V] T::contains(self : T[K, V], key : K) -> Bool {
 /// map.remove("one")
 /// ```
 pub fn[K : Hash + Eq, V] T::remove(self : T[K, V], key : K) -> Unit {
-  let hash = key.hash()
+  let hash = Hash::hash(key)
   let idx = self.find_bucket(hash, key)
 
   if idx >= 0 {
@@ -599,7 +589,7 @@ pub fn[K : Hash + Eq, V] of(arr : FixedArray[(K, V)]) -> T[K, V] {
 
 ///|
 /// 相等性比较
-pub impl[K : Hash + Eq, V : Eq] Eq for T[K, V] with equal(
+pub impl[K : Hash + Eq, V : Eq] Eq for T[K, V] with fn equal(
   self : T[K, V],
   that : T[K, V],
 ) -> Bool {
@@ -627,7 +617,7 @@ pub impl[K : Hash + Eq, V : Eq] Eq for T[K, V] with equal(
 
 ///|
 /// 字符串表示
-pub impl[K : Show, V : Show] Show for T[K, V] with output(
+pub impl[K : Show, V : Show] Show for T[K, V] with fn output(
   self : T[K, V],
   logger : &Logger,
 ) -> Unit {

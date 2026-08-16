@@ -54,21 +54,24 @@ pub fn[K, V] T::clear(Self[K, V]) -> Unit
 pub fn[K : Hash + Eq, V] T::contains(Self[K, V], K) -> Bool
 pub fn[K, V] T::each(Self[K, V], (K, V) -> Unit) -> Unit
 pub fn[K, V] T::eachi(Self[K, V], (Int, K, V) -> Unit) -> Unit
+pub fn[K : Hash + Eq, V : Eq] T::equal(Self[K, V], Self[K, V]) -> Bool
+#alias("_[_]")
 pub fn[K : Hash + Eq, V] T::get(Self[K, V], K) -> V?
 pub fn[K : Hash + Eq, V] T::get_or_default(Self[K, V], K, V) -> V
 pub fn[K, V] T::is_empty(Self[K, V]) -> Bool
 pub fn[K, V] T::iter(Self[K, V]) -> Iter[(K, V)]
 pub fn[K, V] T::iter2(Self[K, V]) -> Iter2[K, V]
-pub fn[K : Hash + Eq, V] T::op_get(Self[K, V], K) -> V?
-pub fn[K : Hash + Eq, V] T::op_set(Self[K, V], K, V) -> Unit
+pub fn[K : Hash + Eq, V : Eq] T::not_equal(Self[K, V], Self[K, V]) -> Bool
+pub fn[K : Show, V : Show] T::output(Self[K, V], &Logger) -> Unit
 pub fn[K : Hash + Eq, V] T::remove(Self[K, V], K) -> Unit
+#alias("_[_]=_")
 pub fn[K : Hash + Eq, V] T::set(Self[K, V], K, V) -> Unit
 pub fn[K, V] T::size(Self[K, V]) -> Int
 pub fn[K, V] T::to_array(Self[K, V]) -> Array[(K, V)]
+pub fn[K : Show, V : Show] T::to_string(Self[K, V]) -> String
 pub impl[K : Hash + Eq, V : Eq] Eq for T[K, V]
 pub impl[K : Show, V : Show] Show for T[K, V]
 
 // Type aliases
 
 // Traits
-

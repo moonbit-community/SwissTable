@@ -1,0 +1,16 @@
+name = "0Ayachi0/SwissTable"
+
+version = "0.1.0"
+
+description = "High performance implementation of SwissTable hash table"
+
+license = "Apache-2.0"
+
+source = "src"
+
+repository = "https://github.com/moonbit-community/SwissTable"
+
+options(
+  dependencies: "",
+  authors: [ "0Ayachi0" ],
+)
